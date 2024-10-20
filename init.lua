@@ -1,4 +1,5 @@
-require "options"
-require "plugins"
-
-require "keybindings"
+ require "options"
+--
+ require "keybindings"
+require("wagany.core")
+require("wagany.lazy")
