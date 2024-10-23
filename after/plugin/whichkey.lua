@@ -26,7 +26,7 @@ local setup = {
 	-- add operators that will trigger motion and text object completion
 	-- to enable all native operators, set the preset / operators plugin above
 	-- operators = { gc = "Comments" },
-	key_labels = {
+	replace = {
 		-- override the label used to display some keys. It doesn't effect WK in any other way.
 		-- For example:
 		-- ["<space>"] = "SPC",
@@ -38,7 +38,7 @@ local setup = {
 		separator = "➜", -- symbol used between a key and it's label
 		group = "+", -- symbol prepended to a group
 	},
-	popup_mappings = {
+	keys = {
 		scroll_down = "<c-d>", -- binding to scroll down inside the popup
 		scroll_up = "<c-u>", -- binding to scroll up inside the popup
 	},
@@ -55,18 +55,18 @@ local setup = {
 		spacing = 3,              -- spacing between columns
 		align = "left",           -- align columns left, center or right
 	},
-	ignore_missing = true,        -- enable this to hide mappings for which you didn't specify a label
+	--filter = true,                -- enable this to hide mappings for which you didn't specify a label
 	--hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ " }, -- hide mapping boilerplate
-	show_help = true,             -- show help message on the command line when the popup is visible
-	triggers = "auto",            -- automatically setup triggers
+	show_help = true, -- show help message on the command line when the popup is visible
+	-- automatically setup triggers
 	-- triggers = {"<leader>"} -- or specify a list manually
-	triggers_blacklist = {
-		-- list of mode / prefixes that should never be hooked by WhichKey
-		-- this is mostly relevant for key maps that start with a native binding
-		-- most people should not need to change this
-		i = { "j", "k" },
-		v = { "j", "k" },
-	},
+	--triggers = {
+	-- list of mode / prefixes that should never be hooked by WhichKey
+	-- this is mostly relevant for key maps that start with a native binding
+	-- most people should not need to change this
+	--	i = { "j", "k" },
+	--v = { "j", "k" },
+	--},
 }
 
 local opts = {
@@ -78,29 +78,25 @@ local opts = {
 	nowait = true, -- use `nowait` when creating keymaps
 }
 
-local mappings = {
+which_key.add(
 
-	["k"] = { "<cmd>bdelete<CR>", "Kill Buffer" }, -- Close current file
-	["p"] = { "<cmd>Lazy<CR>", "Plugin Manager" }, -- Invoking plugin manager
-	["q"] = { "<cmd>wqall!<CR>", "Quit" },      -- Quit Neovim after saving the file
-	["w"] = { "<cmd>w!<CR>", "Save" },          -- Save current file
-	["m"] = { "<cmd>Mason<cr>", "Mason UI for Lsp" },
-	["r"] = { "<cmd>lua vim.lsp.buf.format{async=true}<cr>", "Reformat Code" },
+	{
+		{ "<leader>k",  "<cmd>bdelete<CR>",                                 desc = "Kill Buffer",       nowait = true, remap = false },
+		{ "<leader>l",  group = "LSP",                                      nowait = true,              remap = false },
+		{ "<leader>lS", "<cmd>Telescope lsp_dynamic_workspace_symbols<cr>", desc = "Workspace Symbols", nowait = true, remap = false },
+		{ "<leader>la", "<cmd>lua vim.lsp.buf.code_action()<cr>",           desc = "Code Action",       nowait = true, remap = false },
+		{ "<leader>li", "<cmd>LspInfo<cr>",                                 desc = "Info",              nowait = true, remap = false },
+		{ "<leader>ll", "<cmd>lua vim.lsp.codelens.run()<cr>",              desc = "CodeLens Action",   nowait = true, remap = false },
+		{ "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>",                desc = "Rename",            nowait = true, remap = false },
+		{ "<leader>ls", "<cmd>Telescope lsp_document_symbols<cr>",          desc = "Document Symbols",  nowait = true, remap = false },
+		{ "<leader>m",  "<cmd>Mason<cr>",                                   desc = "Mason UI for Lsp",  nowait = true, remap = false },
+		{ "<leader>p",  "<cmd>Lazy<CR>",                                    desc = "Plugin Manager",    nowait = true, remap = false },
+		{ "<leader>q",  "<cmd>wqall!<CR>",                                  desc = "Quit",              nowait = true, remap = false },
+		{ "<leader>r",  "<cmd>lua vim.lsp.buf.format{async=true}<cr>",      desc = "Reformat Code",     nowait = true, remap = false },
+		{ "<leader>w",  "<cmd>w!<CR>",                                      desc = "Save",              nowait = true, remap = false },
+	})
 
-	l = {
-		name = "LSP",
-		a = { "<cmd>lua vim.lsp.buf.code_action()<cr>", "Code Action" },
-		i = { "<cmd>LspInfo<cr>", "Info" },
-		l = { "<cmd>lua vim.lsp.codelens.run()<cr>", "CodeLens Action" },
-		r = { "<cmd>lua vim.lsp.buf.rename()<cr>", "Rename" },
-		s = { "<cmd>Telescope lsp_document_symbols<cr>", "Document Symbols" },
-		S = {
-			"<cmd>Telescope lsp_dynamic_workspace_symbols<cr>",
-			"Workspace Symbols",
-		},
-	},
 
-}
+
 
 which_key.setup(setup)
-which_key.register(mappings, opts)
