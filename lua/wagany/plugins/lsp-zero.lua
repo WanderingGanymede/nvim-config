@@ -24,7 +24,6 @@ return
 	},
 	config = function()
 		vim.opt.signcolumn = 'yes'
-		local lspconfig_defaults = require('lspconfig').util.default_config
 		-- Add cmp_nvim_lsp capabilities settings to lspconfig
 		-- This should be executed before you configure any language server
 		local lspconfig_defaults = require('lspconfig').util.default_config
@@ -80,6 +79,14 @@ return
 			}),
 		})
 
+		local gdscript_config = {
+			capabilities = capabilities,
+			settings = {},
+		}
+		if vim.fn.has 'win32' == 1 then
+			gdscript_config['cmd'] = { 'ncat', 'localhost', os.getenv 'GDScript_Port' or '6005' }
+		end
+		require('lspconfig').gdscript.setup(gdscript_config)
 		require('mason').setup({})
 		require('mason-lspconfig').setup({
 			-- Replace the language servers listed here
@@ -90,13 +97,6 @@ return
 					require('lspconfig')[server_name].setup({})
 				end,
 
-				lua = function()
-					require('lspconfig').lua_ls.setup({
-						on_attach = function(client, bufnr)
-							print('hello lua ls')
-						end
-					})
-				end,
 			}
 		})
 
