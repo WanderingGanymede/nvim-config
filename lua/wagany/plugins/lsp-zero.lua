@@ -57,6 +57,7 @@ return
 		cmp.setup({
 			sources = {
 				{ name = 'nvim_lsp' },
+				{ name = 'buffer' },
 			},
 			snippet = {
 				expand = function(args)
@@ -69,6 +70,7 @@ return
 				['<C-p>'] = cmp.mapping.select_prev_item({ behavior = 'select' }),
 				['<C-n>'] = cmp.mapping.select_next_item({ behavior = 'select' }),
 				-- `Enter` key to confirm completion
+				['<Tab>'] = cmp.mapping.confirm({ select = true }),
 				['<CR>'] = cmp.mapping.confirm({ select = false }),
 				-- Ctrl+Space to trigger completion menu
 				['<C-Space>'] = cmp.mapping.complete(),
@@ -77,6 +79,7 @@ return
 
 				['<C-d>'] = cmp.mapping.scroll_docs(4),
 			}),
+
 		})
 
 		local gdscript_config = {
@@ -87,13 +90,17 @@ return
 			gdscript_config['cmd'] = { 'ncat', 'localhost', os.getenv 'GDScript_Port' or '6005' }
 		end
 
-
-
-
-		local lspconfig=require('lspconfig')
+		--------------
+		------------  LSP CONFIG
+		--------------
+		--------------
+		local lspconfig = require('lspconfig')
 		lspconfig.gdscript.setup(gdscript_config)
 
-		lspconfig.nixd.setup{}
+		lspconfig.pylsp.setup {}
+
+		lspconfig.nixd.setup {}
+
 		lspconfig.lua_ls.setup {
 			on_init = function(client)
 				if client.workspace_folders then
